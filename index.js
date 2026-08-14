@@ -1,18 +1,19 @@
-const http = require("http");
-const fs = require("fs/promises");
+const express = require("express");
+const app = express();
 
-const server = http.createServer(async (req, res) => {
-  if (req.url === "/") {
-    res.end(await fs.readFile("index.html"));
-  } else if (req.url === "/about") {
-    res.end(await fs.readFile("about.html"));
-  } else if (req.url === "/contact") {
-    res.end(await fs.readFile("contact-me.html"));
-  } else {
-    res.end(await fs.readFile("404.html"));
-  }
+const options = { root: __dirname };
+
+app.get("/", (req, res) => res.sendFile("./index.html", options));
+app.get("/about", (req, res) => res.sendFile("./about.html", options));
+app.get("/contact", (req, res) => res.sendFile("./contact-me.html", options));
+app.use((req, res) => {
+  res.sendFile("/404.html", options);
 });
 
-server.listen(8080, () => {
-  console.log("server is running at http://localhost:8080");
+const PORT = 3000;
+
+app.listen(PORT, (err) => {
+  if (err) throw err;
+
+  console.log(`Server is listening on port ${PORT}`);
 });
